@@ -13,9 +13,9 @@ namespace API.SignalR
     public class MessagesHub : Hub
     {
         private readonly IMessageRepository _messageRepository;
-        private readonly UserRepository _userRepository;
-        private readonly Mapper _mapper;
-        public MessagesHub(IMessageRepository messageRepository, UserRepository userRepository, Mapper mapper)
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
+        public MessagesHub(IMessageRepository messageRepository, IUserRepository userRepository, IMapper mapper)
         {
             _mapper = mapper;
             _userRepository = userRepository;
@@ -43,13 +43,12 @@ namespace API.SignalR
             var username = Context.User.GetUsername();
 
             if (username == createMessageDto.RecipientUsername.ToLower())
-            throw new HubException("You cannot send a message to yourself");
+                throw new HubException("You cannot send a message to yourself");
 
             var sender = await _userRepository.GetUserByUsernameAsync(username);
             var recipient = await _userRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
 
-            if (recipient == null)
-            throw new HubException("Recipient not found");
+            if (recipient == null) throw new HubException("Recipient not found");
 
             var message = new Message
             {
