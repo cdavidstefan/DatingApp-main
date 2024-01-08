@@ -10,11 +10,10 @@ namespace API.Controllers
 {
     public class LikesController : BaseApiController
     {
-        private readonly UnitOfWork _uow;
-        public LikesController(UnitOfWork uow)
+        private readonly IUnitOfWork _uow;
+        public LikesController(IUnitOfWork uow)
         {
             _uow = uow;
-
         }
 
         [HttpPost("{username}")]
